@@ -3,7 +3,7 @@ MAINTAINER dan budris <dbudris@bu.edu>
 
 RUN apt-get update -y
 RUN apt-get install -y vim
-RUN npm install mongodb
+RUN npm install mongodb requests
 
 CMD tail -f /dev/null
 
