@@ -7,8 +7,8 @@ RUN apt-get install -y \
                        wget \
                        git
 
-RUN npm install mongodb request pm2
+RUN npm -g install mongodb request pm2
 
 RUN cd /srv && git clone https://github.com/danbudris/governetworks.git
 
-CMD /srv/governetworks/backend/hello.js
+CMD pm2 start /srv/governetworks/backend/hello.js && tail -f /dev/null
