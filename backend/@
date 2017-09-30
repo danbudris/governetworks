@@ -32,7 +32,8 @@ app.get('/test', function(req, res){
   var data = []
   db.collection('test').find({first_name: "John"}).toArray(function(err, docs){
     if(err){console.error(err)}
-    res.send(docs)
+      data.push(JSON.parse(docs))
+  res.json(data);
   })
 });
 

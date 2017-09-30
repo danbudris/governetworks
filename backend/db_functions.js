@@ -1,6 +1,6 @@
 //create the database connection
 var MongoClient = require('mongodb').MongoClient;
-var url = "mongodb://172.17.0.2:27017/";
+var url = "mongodb://172.18.0.2:27017/";
 
 //var document = { name: "Company Inc", address: "Highway 99"};
 var query = { first_name: "John" };
@@ -17,7 +17,7 @@ function callback(error, response, body){
   if (!error && response.statusCode == 200){
   var info = JSON.parse(body);
   console.log(info.results[0].members);
-  insert_document(url, "test_2", "test_coll2", info.results[0].members);
+  insert_document(url, "test", "test", info.results[0].members);
   }
 };
 
@@ -97,7 +97,7 @@ function query_document(url, database, coll_name, query){
 //create_db(url, "test_2");
 //create_collection(url, "test_2", "test_coll2");
 //insert_document(url, "test_2", "test_coll2", document);
-//find_all_document(url, "test_2", "test_coll2");
-query_document(url, "test_2", "test_coll2", query);
-//request(options, callback)
+//find_all_document(url, "test", "test");
+query_document(url, "test", "test", query);
+//document = request(options, callback);
 

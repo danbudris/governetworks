@@ -1,7 +1,7 @@
 var MongoClient = require('mongodb').MongoClient
     , format = require('util').format;
 
-MongoClient.connect('mongodb://172.17.0.2:27017/test', function(err, db) {
+MongoClient.connect('mongodb://172.18.0.2:27017/test', function(err, db) {
     if(err) throw err;
     
     //create a new test collection, and write to it
