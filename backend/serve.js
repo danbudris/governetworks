@@ -14,9 +14,11 @@ app.get('/test', function (req, res, next){
   const pool = new Pool({
     connectionString: conString,
   })
-  pool.query('SELECT * FROM public.congress_person', (err, res) => {
-    console.log(err, res)
+  pool.query('SELECT * FROM public.congress_person', (err, results) => {
+    console.log(err, results)
+    res.send(results.rows)
     pool.end()
   });
 });
+
 app.listen(8080);
