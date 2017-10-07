@@ -1,4 +1,5 @@
 //ProPublica Parser
+// This is a module for parsing the input of the ProPublica Congress API, and inserting the contents into the Postgres Database
 
 const { Pool, Client } = require('pg')
 const conString = 'postgres://postgres:example@postgres/postgres'
@@ -16,9 +17,9 @@ var options = {
 };
 
 
-// attempting to break down the API response, parse it, and add it into the database
-// been flailing around at this all day, having a really hard time figuring it out
-// so far I can get a basic connection to and read on the DB, but not much else
+//currently, this function below will in fact connect to the PG db and insert the member information as needed
+//couldn't figure out how to do a dynamic insert, using a variable for the column name, so they are hard-coded for now
+//might be able to dynamically generate the sql with variables, add them to an array as strings, then execute each one on the db
 
 function callback(error, response, body){
   if (!error && response.statusCode == 200){
