@@ -14,7 +14,7 @@ app.get('/test', function (req, res, next){
   const pool = new Pool({
     connectionString: conString,
   })
-  pool.query('SELECT * FROM public.congress_person', (err, results) => {
+  pool.query('SELECT first_name, last_name, party FROM public.congress_person', (err, results) => {
     console.log(err, results)
     res.send(results.rows)
     pool.end()
