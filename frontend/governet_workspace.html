@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+    <head>
+        <!-- References to VIS library CSS and HTML; set up for container installation, and allow referencing -->
+        <script type="text/javascript" src="/Users/Dan/Documents/fall 2017/cs 601/homework/cs601/node_modules/vis/dist/vis.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">        
+        <link href="/Users/Dan/Documents/fall 2017/cs 601/homework/cs601/node_modules/vis/dist/vis.css" rel="stylesheet" type="text/css" />
+        <style>
+            html {
+                height: 100%;
+                font-size: 75%;
+            }
+
+            /* Set up the gridlines in the body and content using reapeating linear gradients */
+            body{
+                margin: 0;
+                padding: 0;
+                height: 100%;
+                background-color: #434343;
+                background-image:linear-gradient(#434343, #282828);
+            }
+
+            #content{
+                background-color: transparent;
+                background-image: linear-gradient(0deg, transparent 24%, rgba(255, 255, 255, 0.05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent), linear-gradient(90deg, transparent 24%, rgba(255, 255, 255, .05) 25%, rgba(255, 255, 255, .05) 26%, transparent 27%, transparent 74%, rgba(255, 255, 255, .05) 75%, rgba(255, 255, 255, .05) 76%, transparent 77%, transparent);
+                height:100%;
+                background-size:50px 50px;
+            }
+
+            /* Set up the slide-out side navbar */
+            .sidebar{
+                width: 2%;
+                height: 100%;
+                position: fixed;
+                z-index: 1;
+                top: 0;
+                left: 0;
+                background: #474747;
+                padding-left: 1%;
+                padding-top: 1%;
+                padding-right: 1%;
+                overflow-x: hidden;
+                overflow-y: hidden;
+                transition: .5s;
+                display: flex;
+                flex-direction: column;
+                justify-content: right;
+                box-shadow: 0 0 5px rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.2);
+               
+            }
+
+            .sidebar:hover{
+                width: 25%;
+            }
+
+            .sidebar_transition{
+                width: 25%;
+            }
+
+            .sidebar_items {
+                padding: 8px 8px 8px 8px;
+                margin: 5px 5px 5px 20px;
+                text-decoration: none;
+                font-size: 1em;
+                color: #93A8AC;
+                background-color: #4C3B4D;
+                display: flex;
+                transition: .5s;
+                box-shadow: 0 0 5px rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.2);
+
+            }
+
+            .bio_box{
+                flex-grow: 2;
+            }
+
+            .bio_text{
+                width: 100%;
+                word-wrap: break-word;
+            }
+
+            /* Set up the slide-out bottom nav bar */
+            .bottombar {
+                width: 100%;
+                height: 1%;
+                position: fixed;
+                z-index: 1;
+                bottom: 0;
+                right: 0;
+                background: #474747;
+                overflow-x: hidden;
+                overflow-y: hidden;
+                transition: .5s;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: flex-start;
+                box-shadow: 0 0 5px rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.2);
+
+            }
+
+            .bottombar:hover{
+                height: 15%;
+            }
+
+            .bottombar_transition{
+                height: 15%;
+            }
+
+            .bottombar_items {
+                padding: 8px 8px 8px 8px;
+                transition: .5s;
+                display: flex;
+                margin: 25px 5px 5px 5px;
+            }
+
+            .bottombar_buttons{
+                background-color: #4C3B4D;
+                color:#93A8AC;
+                box-shadow: 0 0 5px rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.2);
+                text-decoration: none;
+                font-size: 1.25em;
+
+            }
+
+            .dropdown_label{
+                text-align: center;
+                margin: 5px;
+                font-size: 1.2em;
+            }
+
+            /* Set the style/size for the graph area */
+            #GraphArea {
+                width: 99%;
+                height: 99%;
+            }
+
+        </style>
+
+        <!-- Meta Tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        <!-- Bootstrap CSS -->
+    </head>
+    <body>
+        <div id="content">
+            <div id="GraphArea"></div>
+            <div id="sidebar" class="sidebar"> 
+                <div class="sidebar_items">
+                    Governet Workspace
+                </div>
+                <div class="from-group sidebar_items">
+                    <label for="vectorSelector" class="dropdown_label">Vector:</label>
+                    <select class="form-control" id="vectorSelector">
+                    </select>
+                </div>
+                <div class="form-group sidebar_items">
+                    <label for="personSelector" class="dropdown_label">Senator:</label>
+                    <select class="form-control" id="personSelector">
+                    </select>
+                </div>
+                <div class="from-group sidebar_items">
+                    <label for="contributorSelector" class="dropdown_label">Contributor:</label>
+                    <select class="form-control" id="contributorSelector">
+                    </select>
+                </div>
+                <div class="sidebar_items">
+                    <button type="button" class="btn btn-default" aria-lable="Add Node" id="addNode">
+                    <span>Add Node</span>
+                </div>
+                <div class="sidebar_items bio_box" id="bio_area">
+                    <div class="bio_text", id="bio_text">  </div>
+                </div>
+            </div>
+
+            <div id="bottombar" class="bottombar">
+                <div>
+                    <button type="button" class="btn btn-default buttons bottombar_items bottombar_buttons" aria-lablel="Clear Graph" id="clearGraph">
+                            <span class="glyphicon glyphicon-star">Clear</span>
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-default bottombar_items bottombar_buttons" aria-label="Redraw" id="redraw">
+                            <span>Draw Graph</span>
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-default bottombar_items bottombar_buttons" aria-label="Senators" id="senatorsButton">
+                            <span>Senators</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Javascript -->
+        <!--Bootstrap dependencies -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    </body>
+</html>
+
+
+
+
+<!-- Javascript Section; seperate into another file  -->
+
+
+
+<script type="text/javascript">
+// graph defenition and creation section 
+
+    function draw(){
+        nodes = new vis.DataSet();
+        edges = new vis.DataSet();
+
+        // create a network
+        var container = document.getElementById('GraphArea');
+
+        // provide the data in the vis format
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        var options = {
+            nodes: {
+                shape: 'circle'
+            }
+        };
+        // initialize your network!
+        network = new vis.Network(container, data, options);
+        
+    }
+
+    // button functions for manipulating the graph
+    var ClearGraphButton = document.getElementById("clearGraph");
+    ClearGraphButton.addEventListener("click", function(){
+        network.destroy();
+        nodes = new vis.DataSet();
+        edges = new vis.DataSet();
+    })
+
+    //add node button
+    var AddNodeButton = document.getElementById("addNode");
+    AddNodeButton.addEventListener("click", function(){
+        var x = nodes.length;
+        var NodeLabel = document.getElementById("personSelector").value;
+        try{
+            nodes.add({
+                id: x+1,
+                label: NodeLabel
+            }),
+            edges.add([
+                {from: x, to: x+1}
+            ]);
+        } 
+        catch(err){
+            console.log(err);
+            console.log('error');
+        }
+    })
+
+    //redraw button
+    var RedrawButton = document.getElementById("redraw");
+    RedrawButton.addEventListener("click", function(){
+        try{
+            draw();
+        }
+        catch(err){
+            console.log(err);
+        }
+    });
+
+
+    // if you click on the canvas, retract the navs
+    /* var canvassSpace = document.getElementById("GraphArea")
+    canvassSpace.addEventListener("click", function(){
+        document.getElementById("sidebar").classList.toggle("sidebar_transition");
+        document.getElementById("bottombar").classList.toggle("bottombar_transition");
+    });
+    */
+    //on-choose function
+    function display_data(){
+        console.log('choooooose yoooou');
+    };
+
+    //senators button start
+    var SenatorsButton = document.getElementById("senatorsButton");
+    SenatorsButton.addEventListener("click", function(){
+        nodes = new vis.DataSet();
+        edges = new vis.DataSet();
+
+        // create a network
+        var container = document.getElementById('GraphArea');
+
+        // provide the data in the vis format
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        var options = {
+            nodes: {
+                shape: 'diamond'
+            },
+            layout:{
+                improvedLayout:true
+            }
+        };
+
+        // initialize your network!
+        network = new vis.Network(container, data, options);
+
+        nodes.add([
+            {id:0, label: "United States Senate", font: "14px arial #e3dac9", shape:"square", color: "white", size: 40, shadow: {color: "black"}},
+            {id:1, label: "Republican Party", font: "14px arial #e3dac9", shape: "square", color: "#E91D0E", size: 20, shadow: {color: "black"}},
+            {id:2, label: "Democratic Party", font: "14px arial #e3dac9", shape: "square", color: "#232066", size: 20, shadow: {color: "black"}},
+            {id:3, label: "Independant", font: "14px arial #e3dac9" ,shape: "square", color: "#9B7874", size: 20, shadow: {color: "black"}}
+        ]);
+
+        edges.add([
+            {from: 0, to: 1, shadow:{color:"#161616"}},
+            {from: 0, to: 2, shadow:{color:"#161616"}},
+            {from: 0, to: 3, shadow:{color:"#161616"}}
+        ]);
+
+        for (var i = 0; len = senators.length, i < len; i++){
+                console.log(senators[i]['id'])
+                
+                leadership = '';
+                defaultWidth = 1;
+
+                switch(senators[i]['party']){
+                    case "R":
+                        party = 1;
+                        nodeColor = "#E91D0E";
+                        borderColor = nodeColor;
+                        backgroundColor = nodeColor;
+                        edgeColor = '#AA160B'
+                        break;
+                    case "D":
+                        party = 2;
+                        nodeColor = "#232066";
+                        borderColor = nodeColor;
+                        backgroundColor = nodeColor;
+                        edgeColor = '#232050'
+                        break;
+                    case "I":
+                        party = 3;
+                        nodeColor = "#9B7874"
+                        borderColor = nodeColor;
+                        backgroundColor = nodeColor;
+                        edgeColor = nodeColor;
+                        break;
+                }
+
+                if(senators[i]['leadership_role'] != null){
+                    console.log('not null');
+                    leadership = senators[i]['leadership_role'];
+                    defaultWidth = 5;
+
+                };
+
+                zid = 0;
+                z = 0;
+
+                nodes.add({
+                    id: senators[i]['id'],
+                    label: senators[i]['first_name'] + "\n" + senators[i]['last_name'] + "\n" + senators[i]['state'],
+                    color: {border: borderColor, background: backgroundColor},
+                    font: "10px arial #e3dac9",
+                    shadow:{color:"#161616"},
+                    chosen:{node: function(values, id, selected, hovering){
+                    if(zid === 0){
+                        zid = id;
+                        var index = senators.findIndex(p => p.id === id);
+                        values.size = values.size+10;
+                        document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
+                        document.getElementById("sidebar").classList.toggle("sidebar_transition");
+                    }
+                    else if(zid != id){
+                        zid = id;
+                        var index = senators.findIndex(p => p.id === id);
+                        values.size = values.size+10;
+                        document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
+                        if(z == 1){
+                            document.getElementById("sidebar").classList.toggle("sidebar_transition");
+                        }
+                        z = 0;
+                        }
+                    else if (zid == id){
+                        document.getElementById("sidebar").classList.toggle("sidebar_transition");
+                        if(z == 0){
+                            values.size = values.size;
+                            z = 1;
+                            }
+                        else{
+                            values.size = values.size+10;
+                            z = 0;
+                        }
+                    } else {
+                        return
+                            }
+                        }
+                    }
+                });
+                edges.add({
+                    from: senators[i]['id'],
+                    to: party,
+                    width: defaultWidth,
+                    color: edgeColor,
+                    shadow:{color:"#161616"}
+                });
+            }
+    });
+
+
+    //html maniuplation elements
+
+    //define input_arry and i so that they can be used in inputs to the below function
+    input_array = [];
+    i = 0;
+    
+    //this is a function which can take an array, iterate over it, and for each add an element to the DOM; takes an array as input
+    function add_element(element, element_type, output, input_array){
+        var select = document.getElementById(element);
+        for(var i = 0; i < input_array.length; i++){
+            var opt = ""
+            var process = output.forEach(function(entry){opt = opt+" "+input_array[i][entry]});
+            var el = document.createElement(element_type);
+            el.text = opt;
+            el.value = opt;
+            select.add(el);
+            }
+    }    
+
+
+    //api call functions to the backend server
+    function status(response){
+        if (response.status >= 200 && response.status < 300) {
+            return Promise.resolve(response)
+        } else {
+            return Promise.reject(new Error(response.statusText))
+        }
+    }
+
+    function json(response){
+        return response.json();
+    }
+
+    fetch('http://127.0.0.1:8888/test')  
+        .then(status)  
+        .then(json)  
+        .then(function(data) {  
+            senators = data;
+            console.log('Request succeeded with JSON response', data); 
+            add_element('personSelector', 'option', ["first_name","last_name"], senators);
+        }).catch(function(error) {  
+            console.log('Request failed', error);  
+    });
+
+
+</script>
