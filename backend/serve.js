@@ -9,6 +9,8 @@ app.use(function(req, res, next) {
     next();
 });
 
+app.use('/static', express.static('public'));
+
 app.get('/workspace', function(req, res) {
     res.sendFile(path.join(__dirname + '/../frontend/governet_workspace.html'));
     });
