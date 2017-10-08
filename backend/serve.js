@@ -9,8 +9,8 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.get('/senators', function(req, res) {
-    res.sendFile(path.join(__dirname + '/projectProposal.html'));
+app.get('/workspace', function(req, res) {
+    res.sendFile(path.join(__dirname + '/../frontend/governet_workspace.html'));
     });
 
 app.get('/test', function (req, res, next){
