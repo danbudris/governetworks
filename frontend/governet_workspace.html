@@ -404,6 +404,8 @@
                         }
                     }
                 });
+
+
                 edges.add({
                     from: senators[i]['id'],
                     to: party,
@@ -448,7 +450,7 @@
         return response.json();
     }
 
-    fetch('http://127.0.0.1:8888/test')  
+    fetch('http://127.0.0.1/test')  
         .then(status)  
         .then(json)  
         .then(function(data) {  
