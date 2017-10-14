@@ -44,3 +44,15 @@ CREATE TABLE congress_person (
 	    missed_votes_pct VARCHAR(20),
 	    votes_with_party_pct VARCHAR(20)	    
 );
+
+CREATE TABLE committee ();
+
+CREATE TABLE candidate ();
+
+CREATE TABLE cmt_to_cand ();
+
+CREATE TABLE individual_contributions ();
+
+CREATE TABLE contributions_to_candidates ();
+
+CREATE TABLE itemized_records ();
