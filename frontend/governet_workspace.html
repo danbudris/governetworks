@@ -1,11 +1,9 @@
 <!DOCTYPE html>
     <head>
-        
         <!-- References to VIS library CSS and HTML, and Bootstrap -->
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js"></script> 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">        
-        
         <style>
             html {
                 height: 100%;
@@ -68,16 +66,21 @@
                 display: flex;
                 transition: .5s;
                 box-shadow: 0 0 5px rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.2);
+                min-height: 5%;
 
             }
 
             .bio_box{
-                flex-grow: 2;
+                flex-grow: 0;
+                overflow: hidden;
             }
 
             .bio_text{
                 width: 100%;
                 word-wrap: break-word;
+                overflow-y: auto;
+                min-height: 100px;
+                margin-right: -17px;
             }
 
             /* Set up the slide-out bottom nav bar */
@@ -94,7 +97,7 @@
                 transition: .5s;
                 display: flex;
                 flex-direction: row;
-                justify-content: space-around;
+                justify-content: center;
                 align-items: flex-start;
                 box-shadow: 0 0 5px rgba(0,0,0,.2), 0 6px 8px 0 rgba(0,0,0,.2);
 
@@ -136,6 +139,10 @@
                 height: 99%;
             }
 
+            button {
+                cursor: pointer;
+            }
+
         </style>
 
         <!-- Meta Tags -->
@@ -171,6 +178,7 @@
                     <span>Add Node</span>
                 </div>
                 <div class="sidebar_items bio_box" id="bio_area">
+                    Bio <br> 
                     <div class="bio_text", id="bio_text">  </div>
                 </div>
             </div>
@@ -178,17 +186,12 @@
             <div id="bottombar" class="bottombar">
                 <div>
                     <button type="button" class="btn btn-default buttons bottombar_items bottombar_buttons" aria-lablel="Clear Graph" id="clearGraph">
-                            <span class="glyphicon glyphicon-star">Clear</span>
-                    </button>
-                </div>
-                <div>
-                    <button type="button" class="btn btn-default bottombar_items bottombar_buttons" aria-label="Redraw" id="redraw">
-                            <span>Draw Graph</span>
+                        <i class="fa fa-eraser fa-3x" aria-hidden="true" data-toggle="tooltip" title="Erase Graph"></i></span>
                     </button>
                 </div>
                 <div>
                     <button type="button" class="btn btn-default bottombar_items bottombar_buttons" aria-label="Senators" id="senatorsButton">
-                            <span>Senators</span>
+                            <i class="fa fa-area-chart fa-3x" aria-hidden="true" data-toggle="tooltip" title="Build Graph"></i></span>
                     </button>
                 </div>
             </div>
@@ -262,17 +265,28 @@
         }
     })
 
-    //redraw button
-    var RedrawButton = document.getElementById("redraw");
-    RedrawButton.addEventListener("click", function(){
-        try{
-            draw();
+    var sidebarArea = document.getElementById("sidebar");
+    sidebarArea.addEventListener("click", function(){
+        document.getElementById("sidebar").classList.toggle("sidebar_transition");
+    })
+    
+    function build_bio(input_array){
+        bio_box = document.getElementById("bio_text");
+        bio_box.innerHTML = "";
+        var i = 0;
+        attrList = ["first_name","last_name","party","next_election","state","state_rank"];
+        for(var x in input_array){
+            console.log(i);
+            var attrName = x;
+            if (attrList.includes(attrName)){
+                var attrValue = input_array[x];
+                var newDiv = document.createElement("div");
+                var newContent = document.createTextNode(attrName + ": " + attrValue);
+                newDiv.appendChild(newContent);
+                bio_box.appendChild(newDiv)};
+            i ++
         }
-        catch(err){
-            console.log(err);
-        }
-    });
-
+    };
 
     // if you click on the canvas, retract the navs
     /* var canvassSpace = document.getElementById("GraphArea")
@@ -373,40 +387,15 @@
                     font: "10px arial #e3dac9",
                     shadow:{color:"#161616"},
                     chosen:{node: function(values, id, selected, hovering){
-                    if(zid === 0){
-                        zid = id;
                         var index = senators.findIndex(p => p.id === id);
                         values.size = values.size+10;
-                        document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
-                        document.getElementById("sidebar").classList.toggle("sidebar_transition");
-                    }
-                    else if(zid != id){
-                        zid = id;
-                        var index = senators.findIndex(p => p.id === id);
-                        values.size = values.size+10;
-                        document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
-                        if(z == 1){
-                            document.getElementById("sidebar").classList.toggle("sidebar_transition");
-                        }
-                        z = 0;
-                        }
-                    else if (zid == id){
-                        document.getElementById("sidebar").classList.toggle("sidebar_transition");
-                        if(z == 0){
-                            values.size = values.size;
-                            z = 1;
-                            }
-                        else{
-                            values.size = values.size+10;
-                            z = 0;
-                        }
-                    } else {
-                        return
-                            }
+                        senatorsJson = JSON.parse(JSON.stringify(senators[index]));
+                        //document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
+                        //document.getElementById("sidebar").classList.toggle("sidebar_transition");
+                        build_bio(senatorsJson);
                         }
                     }
                 });
-
 
                 edges.add({
                     from: senators[i]['id'],
@@ -417,7 +406,6 @@
                 });
             }
     });
-
 
     //html maniuplation elements
 
@@ -438,6 +426,12 @@
             }
     }    
 
+    function json_to_element(element, element_type, output, input_array){
+        var select = document.getElementById(element);
+        for(var i = 0; i < input_array.length; i++){
+            console.log('test');
+        }
+    };
 
     //api call functions to the backend server
     function status(response){
