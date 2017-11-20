@@ -6,6 +6,17 @@ const pg = require('pg');
 const {Pool, Client} = require('pg')
 const conString = 'postgres://postgres:example@postgres/postgres'
 
+//This DB function should be called with queries from the below routes
+function call_db(input_query){
+    const pool = new Pool({
+        connectionString: conString,
+    })
+    pool.query(input_query, (err, results) => {
+        return results
+    })
+    pool.end()
+};
+
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -22,12 +33,13 @@ app.get('/committee', (req, res, next) => {
     console.log('test')
     let cmtname = req.query.cmtname
     let cmtid = req.query.cmtid
-    //let query = "SELECT contributes_by_committee.\"NAME\", contributes_by_committee.\"TRANSACTION_AMT\" as \"Ammount\", candidate.\"CAND_NAME\" FROM contributes_by_committee JOIN candidate ON contributes_by_committee.\"CAND_ID\" = candidate.\"CAND_ID\" WHERE \"NAME\" = \'MAIN STREE MEDIA GROUP\'"
+
+    let query1 = "SELECT public.contributes_by_committee.\"NAME\", public.contributes_by_committee.\"TRANSACTION_AMT\" as \"Ammount\", public.candidate.\"CAND_NAME\" FROM public.contributes_by_committee JOIN public.candidate ON public.contributes_by_committee.\"CAND_ID\" = public.candidate.\"CAND_ID\" WHERE \"NAME\" = \'" + cmtname + "\'"
 
     const pool = new Pool({
       connectionString: conString,   
     })
-    pool.query('SELECT NAME from public.cmte_to_cand', (err, result) => {
+      pool.query(query1, (err, results) => {
       console.log(err, results)
       res.send(results.rows)
       pool.end()
@@ -40,8 +52,7 @@ app.get('/candidates', (req, res) => {
 });
 
 app.get('/test', function (req, res, next){
-  const { Pool, Client } = require('pg')
-  const conString = 'postgres://postgres:example@postgres/postgres'
+  
   const pool = new Pool({
     connectionString: conString,
   })
