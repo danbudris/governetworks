@@ -424,7 +424,7 @@
             el.value = opt;
             select.add(el);
             }
-    }    
+    };    
 
     function json_to_element(element, element_type, output, input_array){
         var select = document.getElementById(element);
@@ -440,11 +440,11 @@
         } else {
             return Promise.reject(new Error(response.statusText))
         }
-    }
+    };
 
     function json(response){
         return response.json();
-    }
+    };
 
     //Promise to get the status and json body from the backend server senators API; 
     fetch('http://127.0.0.1:8888/test')  
