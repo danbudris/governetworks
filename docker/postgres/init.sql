@@ -231,3 +231,6 @@ CREATE TABLE individual_contributions ();
 CREATE TABLE contributions_to_candidates ();
 
 CREATE TABLE itemized_records ();
+
+COPY committee FROM '/opt/data/2018/cm.txt' (DELIMITER('|'));
+
