@@ -60,7 +60,7 @@ app.get('/committee', (req, res, next) => {
     });
 });
 
-app.get('/candidates', (req, res) => {
+app.get('/candidate', (req, res) => {
     let candname = req.query.candname
     let candid = req.query.candid
     res.send("test");
