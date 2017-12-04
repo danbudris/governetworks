@@ -67,7 +67,18 @@ app.get('/contribution', (req, res) => {
 app.get('/candidate', (req, res) => {
     let candname = req.query.candname
     let candid = req.query.candid
-    res.send("test");
+  
+    var query1 = "SELECT public.candidate.\"CAND_ID\", public.candidate.\"CAND_NAME\" FROM public.candidate"
+
+    const pool = new Pool({
+      connectionString: conString,
+    })
+      pool.query(query1, (err, results) => {
+      console.log(err, results)
+      res.send(results.rows)
+      pool.end()
+    });
+
 });
 
 app.get('/test', function (req, res, next){

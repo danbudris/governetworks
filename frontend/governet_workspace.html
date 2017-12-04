@@ -453,8 +453,8 @@
 
     var CommitteeButton = document.getElementById("committeeButton");
     CommitteeButton.addEventListener("click", function(){
-        nodes = new vis.DataSet();
-        edges = new vis.DataSet();
+        var nodes = new vis.DataSet();
+        var edges = new vis.DataSet();
 
         // create a network
         var container = document.getElementById('GraphArea');
@@ -472,12 +472,12 @@
             layout:{
                 improvedLayout:true
             }
-        };
+        }
 
         // initialize your network!
         network = new vis.Network(container, data, options);
 
-        for (var i = 0; len = committees.length, i < len; i++){                
+        for (var i = 0; len = 2000, i < len; i++){                
                 zid = 0;
                 z = 0;
 
@@ -485,21 +485,32 @@
                     id: committees[i]['CMTE_ID'],
                     label: committees[i]['CMTE_NM'],
                     font: "10px arial #e3dac9",
+                    color: {border: "#4879a0", background: "#4879a0"},
                     shadow:{color:"#161616"},
                 });
-            }
+            } 
 
-        for (var i = 0; len = candidates.length, i < len; i++){                
+        for (var i = 0; len = 700, i < len; i++){
             zid = 0;
             z = 0;
-
+           
             nodes.add({
                 id: candidates[i]['CAND_ID'],
-                label: candidates[i]['CAND_NM'],
-                font: "10px arial #e3dac9",
-                shadow:{color:"#161616"},
+                label: candidates[i]['CAND_NAME'],
+                font: "10 px arial #e3dac9",
+                color: {border: "#48a071", background: "#48a071"},
+                shadow:{color:"#161616"},    
             });
-        }
+           
+	    //THIS NEEDS TO OCCUR AFTER ALL OF THE NODES HAVE BEEN CREATED
+            edges.add({
+                from: committees[i]['CMTE_ID'],
+                to: committees[i]['CAN_ID'],
+                width: 5,
+                color: "#48a071",
+                shadow:{color:"#161616"}
+                });
+          }
     });
 
     // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
