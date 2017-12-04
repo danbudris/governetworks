@@ -31,12 +31,26 @@ app.get('/workspace', function(req, res) {
 
 app.get('/committee', (req, res, next) => {
     console.log('test')
-    let cmtname = req.query.cmtname
-    let cmtid = req.query.cmtid
+    var cmtname = req.query.cmtname
+    var cmtid = req.query.cmtid
 
-    let query1 = "SELECT public.contributes_by_committee.\"NAME\", public.contributes_by_committee.\"TRANSACTION_AMT\" as \"Ammount\", public.candidate.\"CAND_NAME\" FROM public.contributes_by_committee JOIN public.candidate ON public.contributes_by_committee.\"CAND_ID\" = public.candidate.\"CAND_ID\" WHERE \"NAME\" = \'" + cmtname + "\'"
+    //let cmtname = "YODER FOR CONGRESS, INC"
 
-    const pool = new Pool({
+    //let query1 = "SELECT public.contributes_by_committee.\"NAME\", public.contributes_by_committee.\"TRANSACTION_AMT\" as \"Ammount\", public.candidate.\"CAND_NAME\" FROM public.contributes_by_committee JOIN public.candidate ON public.contributes_by_committee.\"CAND_ID\" = public.candidate.\"CAND_ID\" WHERE \"NAME\" = \'" + cmtname + "\'"
+ 
+    if (cmtname) {
+        var query1 = "SELECT public.contributes_by_committee.\"NAME\", public.contributes_by_committee.\"TRANSACTION_AMT\" as \"Ammount\", public.contributes_by_committee.\"CMTE_ID\", public.candidate.\"CAND_ID\", public.candidate.\"CAND_NAME\" FROM public.contributes_by_committee JOIN public.candidate ON public.contributes_by_committee.\"CAND_ID\" = public.candidate.\"CAND_ID\" WHERE \"NAME\" = '" + cmtname + "'";
+    } else if (cmtid){
+        cmtid.forEach((item) => {
+            res.send(item);
+        });
+    } 
+  
+    else {
+        var query1 = "SELECT public.committee.\"CMTE_ID\", public.committee.\"CMTE_NM\" FROM public.committee";  
+    }
+
+   const pool = new Pool({
       connectionString: conString,   
     })
       pool.query(query1, (err, results) => {
@@ -49,6 +63,7 @@ app.get('/committee', (req, res, next) => {
 app.get('/candidates', (req, res) => {
     let candname = req.query.candname
     let candid = req.query.candid
+    res.send("test");
 });
 
 app.get('/test', function (req, res, next){
