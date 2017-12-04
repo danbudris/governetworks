@@ -194,6 +194,11 @@
                             <i class="fa fa-area-chart fa-3x" aria-hidden="true" data-toggle="tooltip" title="Build Graph"></i></span>
                     </button>
                 </div>
+                <div>
+                    <button type="button" class="btn btn-default bottombar_items bottombar_buttons" aria-label="Committees" id="committeeButton">
+                            <i class="fa fa-area-chart fa-3x" aria-hidden="true" data-toggle="tooltip" title="Build Graph"></i></span>
+                    </button>
+                </div>
             </div>
         </div>
         <!-- Javascript -->
@@ -446,6 +451,58 @@
         return response.json();
     };
 
+    var CommitteeButton = document.getElementById("committeeButton");
+    CommitteeButton.addEventListener("click", function(){
+        nodes = new vis.DataSet();
+        edges = new vis.DataSet();
+
+        // create a network
+        var container = document.getElementById('GraphArea');
+
+        // provide the data in the vis format
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        var options = {
+            nodes: {
+                shape: 'diamond'
+            },
+            layout:{
+                improvedLayout:true
+            }
+        };
+
+        // initialize your network!
+        network = new vis.Network(container, data, options);
+
+        for (var i = 0; len = committees.length, i < len; i++){                
+                zid = 0;
+                z = 0;
+
+                nodes.add({
+                    id: committee[i]['CMTE_ID'],
+                    label: committee[i]['CMTE_NM'],
+                    font: "10px arial #e3dac9",
+                    shadow:{color:"#161616"},
+                });
+            }
+
+        for (var i = 0; len = candidates.length, i < len; i++){                
+            zid = 0;
+            z = 0;
+
+            nodes.add({
+                id: candidates[i]['CAND_ID'],
+                label: candidates[i]['CAND_NM'],
+                font: "10px arial #e3dac9",
+                shadow:{color:"#161616"},
+            });
+        }
+    });
+
+    // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
     //Promise to get the status and json body from the backend server senators API; 
     fetch('http://127.0.0.1:8888/test')  
         .then(status)  
@@ -454,6 +511,38 @@
             senators = data;
             console.log('Request succeeded with JSON response', data); 
             add_element('personSelector', 'option', ["first_name","last_name"], senators);
+        }).catch(function(error) {  
+            console.log('Request failed', error);  
+    });
+
+    //Promsie to get the commitee data from the api
+    fetch('http://127.0.0.1:8888/committee')  
+        .then(status)  
+        .then(json)  
+        .then(function(data) {  
+            committees = data;
+            console.log('Committee request succeeded with JSON response', data); 
+        }).catch(function(error) {  
+            console.log('Request failed', error);  
+    });
+
+
+    fetch('http://127.0.0.1:8888/candidate')  
+        .then(status)  
+        .then(json)  
+        .then(function(data) {  
+            candidates = data;
+            console.log('Candidate request succeeded with JSON response', data); 
+        }).catch(function(error) {  
+            console.log('Request failed', error);  
+    });
+
+    fetch('http://127.0.0.1:8888/contribution')  
+        .then(status)  
+        .then(json)  
+        .then(function(data) {  
+            contributions = data;
+            console.log('Contribution request succeeded with JSON response', data); 
         }).catch(function(error) {  
             console.log('Request failed', error);  
     });
