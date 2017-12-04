@@ -60,6 +60,10 @@ app.get('/committee', (req, res, next) => {
     });
 });
 
+app.get('/contribution', (req, res) => {
+    res.send("contributionTest");
+});
+
 app.get('/candidate', (req, res) => {
     let candname = req.query.candname
     let candid = req.query.candid
@@ -67,7 +71,6 @@ app.get('/candidate', (req, res) => {
 });
 
 app.get('/test', function (req, res, next){
-  
   const pool = new Pool({
     connectionString: conString,
   })
