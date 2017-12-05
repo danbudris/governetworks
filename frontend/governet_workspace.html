@@ -476,12 +476,13 @@
 
         // initialize your network!
         network = new vis.Network(container, data, options);
-
-        for (var i = 0; len = 2000, i < len; i++){                
+        nodelist = [];      
+  
+        for (var i = 0; len = committees.length, i < len; i++){                
                 zid = 0;
                 z = 0;
 
-                nodes.add({
+                nodelist.push({
                     id: committees[i]['CMTE_ID'],
                     label: committees[i]['CMTE_NM'],
                     font: "10px arial #e3dac9",
@@ -490,18 +491,20 @@
                 });
             } 
 
-        for (var i = 0; len = 700, i < len; i++){
+        for (var i = 0; len = candidates.length, i < len; i++){
             zid = 0;
             z = 0;
            
-            nodes.add({
+            nodelist.push({
                 id: candidates[i]['CAND_ID'],
                 label: candidates[i]['CAND_NAME'],
                 font: "10 px arial #e3dac9",
                 color: {border: "#48a071", background: "#48a071"},
                 shadow:{color:"#161616"},    
             });
-           
+       
+            nodes.add(nodelist);
+    
 	    //THIS NEEDS TO OCCUR AFTER ALL OF THE NODES HAVE BEEN CREATED
             edges.add({
                 from: committees[i]['CMTE_ID'],
