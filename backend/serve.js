@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const pg = require('pg');
-const cmt_builder = require('./committee_builder');
 
 const {Pool, Client} = require('pg')
 const conString = 'postgres://postgres:example@postgres/postgres'
@@ -26,7 +25,7 @@ app.use(function(req, res, next) {
 
 app.use('/static', express.static('public'));
 
-app.get('/workspace', (req, res) => {
+app.get('/workspace', function(req, res) {
     res.sendFile(path.join(__dirname + '/../frontend/governet_workspace.html'));
     });
 
@@ -79,21 +78,11 @@ app.get('/contribution', (req, res) => {
 app.get('/candidate', (req, res) => {
     let candname = req.query.candname
     let candid = req.query.candid
-  
-    var query1 = "SELECT public.candidate.\"CAND_ID\", public.candidate.\"CAND_NAME\" FROM public.candidate"
-
-    const pool = new Pool({
-      connectionString: conString,
-    })
-      pool.query(query1, (err, results) => {
-      console.log(err, results)
-      res.send(results.rows)
-      pool.end()
-    });
-
+    res.send("test");
 });
 
 app.get('/test', function (req, res, next){
+  
   const pool = new Pool({
     connectionString: conString,
   })
