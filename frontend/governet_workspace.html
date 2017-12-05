@@ -452,7 +452,8 @@
     };
 
     var CommitteeButton = document.getElementById("committeeButton");
-    CommitteeButton.addEventListener("click", function(){
+    CommitteeButton.addEventListener("click", graph_contributions("A000360")); 
+    /* CommitteeButton.addEventListener("click", function(){
         nodes = new vis.DataSet();
         edges = new vis.DataSet();
 
@@ -501,6 +502,50 @@
             });
         }
     });
+    */
+
+    function graph_contributions(congress_id){
+
+            var individ_contribs = contributions.filter((el) => {
+                return el.id = congress_id
+            }); 
+
+            nodes = new vis.DataSet();
+            edges = new vis.DataSet();
+    
+            // create a network
+            var container = document.getElementById('GraphArea');
+    
+            // provide the data in the vis format
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+    
+            var options = {
+                nodes: {
+                    shape: 'square'
+                },
+                layout:{
+                    improvedLayout:true
+                }
+            };
+    
+            // initialize your network!
+            network = new vis.Network(container, data, options);
+    
+            for (var i = 0; len = individ_contribs.length, i < len; i++){                
+                    zid = 0;
+                    z = 0;
+    
+                    nodes.add({
+                        id: individ_contribs[i]['CMTE_ID'],
+                        label: individ_contribs[i]['CMTE_NM'],
+                        font: "10px arial #e3dac9",
+                        shadow:{color:"#161616"},
+                    });
+                }
+        };
 
     // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
     //Promise to get the status and json body from the backend server senators API; 
@@ -549,3 +594,5 @@
 
 
 </script>
+
+
