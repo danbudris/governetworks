@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const pg = require('pg');
+const cmt_builder = require('./committee_builder');
 
 const {Pool, Client} = require('pg')
 const conString = 'postgres://postgres:example@postgres/postgres'
@@ -25,7 +26,7 @@ app.use(function(req, res, next) {
 
 app.use('/static', express.static('public'));
 
-app.get('/workspace', function(req, res) {
+app.get('/workspace', (req, res) => {
     res.sendFile(path.join(__dirname + '/../frontend/governet_workspace.html'));
     });
 
@@ -60,8 +61,17 @@ app.get('/committee', (req, res, next) => {
     });
 });
 
-app.get('/contribution', (req, res) => {
-    res.send("contributionTest");
+app.get('/contributions', (req, res) => {
+    var query1 = SELECT public.committee.\"CMTE_ID\", public.committee.\"CMTE_NM\", SUM(public.contributes_by_committee.\"TRANSACTION_AMT\") AS \"Transaction Total\", public.congress_person.\"id\" FROM public.\"congress_person\" JOIN public.candidate ON public.candidate.\"CAND_NAME\" LIKE UPPER(public.congress_person.\"full_name\") JOIN public.contributes_by_committee ON public.candidate.\"CAND_ID\" = public.contributes_by_committee.\"CAND_ID\" JOIN public.committee ON public.contributes_by_committee.\"CMTE_ID\" = public.committee.\"CMTE_ID\" GROUP BY public.committee.\"CMTE_ID\", public.candidate.\"CAND_ID\", public.congress_person.\"id\", public.committee.\"CMTE_NM\" ORDER BY public.congress_person.\"id\", \"Transaction Total\" DESC
+
+    const pool = new Pool({
+      connectionString: conString,
+    })
+      pool.query(query1, (err, results) => {
+      console.log(err, results)
+      res.send(results.rows)
+      pool.end()
+    });
 });
 
 app.get('/candidate', (req, res) => {
