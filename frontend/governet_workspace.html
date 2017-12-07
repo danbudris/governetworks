@@ -3,6 +3,7 @@
         <!-- References to VIS library CSS and HTML, and Bootstrap -->
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.js"></script> 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://use.fontawesome.com/af844b8b1d.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">        
         <style>
             html {
@@ -196,7 +197,7 @@
                 </div>
                 <div>
                     <button type="button" class="btn btn-default bottombar_items bottombar_buttons" aria-label="Committees" id="committeeButton">
-                            <i class="fa fa-area-chart fa-3x" aria-hidden="true" data-toggle="tooltip" title="Build Graph"></i></span>
+                            <i class="fa fa-usd fa-3x" aria-hidden="true" data-toggle="tooltip" title="Display Committee Connections"></i></span>
                     </button>
                 </div>
             </div>
@@ -391,6 +392,7 @@
                     color: {border: borderColor, background: backgroundColor},
                     font: "10px arial #e3dac9",
                     shadow:{color:"#161616"},
+                    size: 35,
                     chosen:{node: function(values, id, selected, hovering){
                         var index = senators.findIndex(p => p.id === id);
                         values.size = values.size+10;
@@ -398,6 +400,7 @@
                         //document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
                         //document.getElementById("sidebar").classList.toggle("sidebar_transition");
                         build_bio(senatorsJson);
+                        congressid = id;   
                         }
                     }
                 });
@@ -452,8 +455,7 @@
     };
 
     var CommitteeButton = document.getElementById("committeeButton");
-    CommitteeButton.addEventListener("click", graph_contributions("A000360")); 
-    /* CommitteeButton.addEventListener("click", function(){
+    /*CommitteeButton.addEventListener("click", function(){
         var nodes = new vis.DataSet();
         var edges = new vis.DataSet();
 
@@ -518,49 +520,51 @@
     });
     */
 
-    function graph_contributions(congress_id){
-
+    CommitteeButton.addEventListener("click", () => {
             var individ_contribs = contributions.filter((el) => {
-                return el.id = congress_id
+                return el.id == congressid
             }); 
 
-            nodes = new vis.DataSet();
-            edges = new vis.DataSet();
-    
-            // create a network
-            var container = document.getElementById('GraphArea');
-    
-            // provide the data in the vis format
-            var data = {
-                nodes: nodes,
-                edges: edges
-            };
-    
-            var options = {
-                nodes: {
-                    shape: 'square'
-                },
-                layout:{
-                    improvedLayout:true
+	    var existing_contribs = individ_contribs.filter((el)=> {
+                if(nodes._data[el.id]){
+                    return el.id
                 }
-            };
-    
-            // initialize your network!
-            network = new vis.Network(container, data, options);
-    
+            });
+ 
+            console.log(individ_contribs);
+   
             for (var i = 0; len = individ_contribs.length, i < len; i++){                
                     zid = 0;
                     z = 0;
-    
-                    nodes.add({
-                        id: individ_contribs[i]['CMTE_ID'],
-                        label: individ_contribs[i]['CMTE_NM'],
-                        font: "10px arial #e3dac9",
-                        shadow:{color:"#161616"},
-                    });
-                }
-        };
 
+                    try{
+                        nodes.add({
+                            id: individ_contribs[i]['CMTE_ID'],
+                            label: individ_contribs[i]['CMTE_NM'],
+                            font: "10px arial #e3dac9",
+                            shadow:{color:"#161616"},
+                            mass: 2,
+                            size: 10,
+                            stabilization: false
+                        });
+                        edges.add({
+                            from: individ_contribs[i]['CMTE_ID'],
+                            to: individ_contribs[i]['id'],
+                            width: 1,
+                            color: "#48a071",
+                            shadow:{color:"#161616"}
+                        });
+                    }catch(e){
+                        edges.add({
+                            from: individ_contribs[i]['CMTE_ID'],
+                            to: individ_contribs[i]['id'],
+                            width: 1,
+                            color: "#48a071",
+                            shadow:{color:"#161616"}
+                        });
+                    }
+                }
+          });
     // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
     //Promise to get the status and json body from the backend server senators API; 
     fetch('http://127.0.0.1:8888/test')  
@@ -608,5 +612,3 @@
 
 
 </script>
-
-
