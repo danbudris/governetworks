@@ -50,7 +50,7 @@ AddNodeButton.addEventListener("click", () => {
 });
 
 //committee information button
-var CommitteInfo = document.getElementById("displayCommittees")
+var CommitteeInfo = document.getElementById("displayCommittees")
 CommitteeInfo.addEventListener("click", () => {
     build_committee_description()
 });
