@@ -63,12 +63,12 @@ body{
 
 }
 
-.bio_box{
+.sidebar_box{
     flex-grow: 0;
     overflow: hidden;
 }
 
-.bio_text{
+.sidebar_text{
     width: 100%;
     word-wrap: break-word;
     overflow-y: auto;
