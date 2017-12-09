@@ -293,6 +293,7 @@ fetch('http://127.0.0.1:8888/committee')
     .then(function(data) {  
         committees = data;
         console.log('Committee request succeeded with JSON response', data); 
+        add_element('commiteeSelector','option',["CMTE_NM"],committees)
     }).catch(function(error) {  
         console.log('Request failed', error);  
 });
