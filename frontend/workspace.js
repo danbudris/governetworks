@@ -305,8 +305,6 @@ fetch('http://127.0.0.1:8888/committee')
     .then(function(data) {  
         committees = data;
         console.log('Committee request succeeded with JSON response', data); 
-        uni_committees = trim(committees, 'CMTE_NM').sort();
-        add_element('committeeSelector','option',["CMTE_NM"],uni_committees)
     }).catch(function(error) {  
         console.log('Request failed', error);  
 });
@@ -328,6 +326,8 @@ fetch('http://127.0.0.1:8888/contribution')
     .then(function(data) {  
         contributions = data;
         console.log('Contribution request succeeded with JSON response', data); 
+        uni_contributions = trim(contributions, 'CMTE_NM').sort();
+        add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
     }).catch(function(error) {  
         console.log('Request failed', error);  
 });
