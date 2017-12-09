@@ -31,7 +31,7 @@ ClearGraphButton.addEventListener("click", function(){
 
 //add node button
 var AddNodeButton = document.getElementById("addNode");
-AddNodeButton.addEventListener("click", function(){
+AddNodeButton.addEventListener("click", () => {
     var x = nodes.length;
     var NodeLabel = document.getElementById("personSelector").value;
     try{
@@ -47,10 +47,16 @@ AddNodeButton.addEventListener("click", function(){
         console.log(err);
         console.log('error');
     }
-})
+});
+
+//committee information button
+var CommitteInfo = document.getElementById("displayCommittees")
+CommitteeInfo.addEventListener("click", () => {
+    build_committee_description()
+});
 
 var sidebarArea = document.getElementById("sidebar");
-sidebarArea.addEventListener("click", function(){
+sidebarArea.addEventListener("click", () => {
     document.getElementById("sidebar").classList.toggle("sidebar_transition");
 })
 
@@ -68,6 +74,24 @@ function build_bio(input_array){
             var newContent = document.createTextNode(attrName + ": " + attrValue);
             newDiv.appendChild(newContent);
             bio_box.appendChild(newDiv)};
+        i ++
+    }
+};
+
+function build_committee_description(input_array){
+    committee_box = document.getElementById("committee_text");
+    committee_box.innerHTML = "";
+    var i = 0;
+    let attrList = ["CMTE_NM","CMTE_ID"];
+    for(var x in input_array){
+        console.log(i);
+        var attrName = x;
+        if (attrList.includes(attrName)){
+            var attrValue = input_array[x];
+            var newDiv = document.createElement("div");
+            var newContent = document.createTextNode(attrName + ": " + attrValue);
+            newDiv.appendChild(newContent);
+            committee_box.appendChild(newDiv)};
         i ++
     }
 };
@@ -263,7 +287,16 @@ CommitteeButton.addEventListener("click", () => {
                         shadow:{color:"#161616"},
                         mass: 2,
                         size: 10,
-                        stabilization: false
+                        stabilization: false,
+                        chosen:{node: function(values, id, selected, hovering){
+                            var index = committees.findIndex(p => p.id === id);
+                            values.size = values.size+10;
+                            committeesJson = JSON.parse(JSON.stringify(committees[index]));
+                            //document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
+                            //document.getElementById("sidebar").classList.toggle("sidebar_transition");
+                            build_committee_description(committeesJson);
+                            committeeId = id;   
+                            }
                     });
                     edges.add({
                         from: individ_contribs[i]['CMTE_ID'],
