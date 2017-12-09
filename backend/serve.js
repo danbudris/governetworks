@@ -60,6 +60,21 @@ app.get('/committee', (req, res, next) => {
     });
 });
 
+app.get('/contribution', (req, res) => {
+    candid = req.query.candid
+    cmtid = req.query.cmtid
+
+    var query1 = "SELECT public.committee.\"CMTE_ID\", public.committee.\"CMTE_NM\", SUM(public.contributes_by_committee.\"TRANSACTION_AMT\") AS \"Transaction Total\", public.congress_person.\"id\" FROM public.\"congress_person\" JOIN public.candidate ON public.candidate.\"CAND_NAME\" LIKE UPPER(public.congress_person.\"full_name\") JOIN public.contributes_by_committee ON public.candidate.\"CAND_ID\" = public.contributes_by_committee.\"CAND_ID\" JOIN public.committee ON public.contributes_by_committee.\"CMTE_ID\" = public.committee.\"CMTE_ID\" GROUP BY public.committee.\"CMTE_ID\", public.candidate.\"CAND_ID\", public.congress_person.\"id\", public.committee.\"CMTE_NM\" ORDER BY public.congress_person.\"id\", \"Transaction Total\" DESC"
+    const pool = new Pool({
+      connectionString: conString,
+    })
+      pool.query(query1, (err, results) => {
+      console.log(err, results)
+      res.send(results.rows)
+      pool.end()
+    });
+});
+
 app.get('/candidate', (req, res) => {
     let candname = req.query.candname
     let candid = req.query.candid
