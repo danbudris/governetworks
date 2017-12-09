@@ -11,4 +11,4 @@ This version of Governetwork is a local application which relies on Docker.  To 
 3. Execute the following docker compose command in the directory ./docker
         1. docker-compose up -d --build
 4. Connect to Governetwork home page in a browser:
-        1. http://127.0.0.1:8888/test
+        1. http://127.0.0.1:8888/workspace
