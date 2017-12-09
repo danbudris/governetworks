@@ -212,6 +212,17 @@ function json_to_element(element, element_type, output, input_array){
     }
 };
 
+//utility function which can dedup and array based on an object key value
+function trim(arr, key) {
+    var values = {};
+    return arr.filter(function(item){
+        var val = item[key];
+        var exists = values[val];
+        values[val] = true;
+        return !exists;
+    });
+}
+
 //api call functions to the backend server
 function status(response){
     if (response.status >= 200 && response.status < 300) {
@@ -261,6 +272,7 @@ CommitteeButton.addEventListener("click", () => {
                         color: "#48a071",
                         shadow:{color:"#161616"}
                     });
+                //the try will except if there is already a node with the given ID; use the catch to build a connecting edge to it
                 }catch(e){
                     edges.add({
                         from: individ_contribs[i]['CMTE_ID'],
@@ -293,7 +305,8 @@ fetch('http://127.0.0.1:8888/committee')
     .then(function(data) {  
         committees = data;
         console.log('Committee request succeeded with JSON response', data); 
-        add_element('committeeSelector','option',["CMTE_NM"],committees)
+        uni_committees = trim(committees, 'CMTE_NM')
+        add_element('committeeSelector','option',["CMTE_NM"],uni_committees)
     }).catch(function(error) {  
         console.log('Request failed', error);  
 });
