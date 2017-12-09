@@ -297,7 +297,9 @@ CommitteeButton.addEventListener("click", () => {
                             build_committee_description(committeesJson);
                             committeeId = id;   
                             }
+                        }
                     });
+
                     edges.add({
                         from: individ_contribs[i]['CMTE_ID'],
                         to: individ_contribs[i]['id'],
