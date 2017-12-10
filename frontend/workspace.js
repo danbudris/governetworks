@@ -83,6 +83,7 @@ function build_committee_description(input_array){
     committee_box.innerHTML = "";
     var i = 0;
     let attrList = ["CMTE_NM","CMTE_ID"];
+    console.log(attrList, input_array)
     for(var x in input_array){
         console.log(i);
         var attrName = x;
