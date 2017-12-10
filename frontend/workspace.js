@@ -287,11 +287,10 @@ CommitteeButton.addEventListener("click", () => {
                         size: 10,
                         stabilization: false,
                         chosen:{node: function(values, id, selected, hovering){
+                            console.log(id);
                             var index = committees.findIndex(p => p.id === id);
                             values.size = values.size+10;
                             committeesJson = committees[index];
-                            //document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
-                            //document.getElementById("sidebar").classList.toggle("sidebar_transition");
                             build_committee_description(committeesJson);
                             committeeId = id;   
                             }
