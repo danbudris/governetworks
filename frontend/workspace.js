@@ -274,6 +274,11 @@ CommitteeButton.addEventListener("click", () => {
 
         console.log(individ_contribs);
 
+        if(individ_contribs.length === 0){
+            alert("No contributors in this timeframe");
+            return;
+        };
+
         for (var i = 0; len = individ_contribs.length, i < len; i++){                
                 zid = 0;
                 z = 0;
@@ -288,7 +293,6 @@ CommitteeButton.addEventListener("click", () => {
                         size: 10,
                         stabilization: false,
                         chosen:{node: function(values, id, selected, hovering){
-                            console.log(id);
                             var index = committees.findIndex(p => p.id === id);
                             values.size = values.size+10;
                             committeesJson = committees[index];
