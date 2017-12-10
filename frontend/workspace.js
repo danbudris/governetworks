@@ -192,8 +192,6 @@ SenatorsButton.addEventListener("click", function(){
                     var index = senators.findIndex(p => p.id === id);
                     values.size = values.size+10;
                     senatorsJson = JSON.parse(JSON.stringify(senators[index]));
-                    //document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
-                    //document.getElementById("sidebar").classList.toggle("sidebar_transition");
                     build_bio(senatorsJson);
                     congressid = id;   
                     }
@@ -291,7 +289,7 @@ CommitteeButton.addEventListener("click", () => {
                         chosen:{node: function(values, id, selected, hovering){
                             var index = committees.findIndex(p => p.id === id);
                             values.size = values.size+10;
-                            committeesJson = JSON.parse(JSON.stringify(committees[index]));
+                            committeesJson = committees[index];
                             //document.getElementById("bio_text").innerHTML = JSON.stringify(senators[index]);
                             //document.getElementById("sidebar").classList.toggle("sidebar_transition");
                             build_committee_description(committeesJson);
