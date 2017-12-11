@@ -30,6 +30,8 @@ ClearGraphButton.addEventListener("click", function(){
 })
 
 //add node button
+/* Temporarily removed for presentation
+
 var AddNodeButton = document.getElementById("addNode");
 AddNodeButton.addEventListener("click", () => {
     var x = nodes.length;
@@ -48,6 +50,7 @@ AddNodeButton.addEventListener("click", () => {
         console.log('error');
     }
 });
+*/
 
 //committee information button
 var CommitteeInfo = document.getElementById("displayCommittees")
