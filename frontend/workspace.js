@@ -348,17 +348,17 @@ build_data_lists(backend_url+'/test', (data) => {
     add_element('personSelector', 'option', ["first_name","last_name"], senators);
 });
 
-build_data_lists(backend_url+'committee', (data) => {
+build_data_lists(backend_url+'/committee', (data) => {
     committees = data;
     console.log('Committee request succeeded with JSON response', data); 
 });
 
-build_data_lists(backend_url+'candidate', (data) => {
+build_data_lists(backend_url+'/candidate', (data) => {
     candidates = data;
     console.log('Candidate request succeeded with JSON response', data); 
 });
 
-build_data_lists(backend_url+'contribution', (data) => {
+build_data_lists(backend_url+'/contribution', (data) => {
     contributions = data;
     console.log('Contribution request succeeded with JSON response', data); 
     uni_contributions = trim(contributions, 'CMTE_NM').sort(function (a, b) {
