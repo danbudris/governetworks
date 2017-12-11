@@ -50,13 +50,13 @@ AddNodeButton.addEventListener("click", () => {
         console.log('error');
     }
 });
-*/
 
 //committee information button
 var CommitteeInfo = document.getElementById("displayCommittees")
 CommitteeInfo.addEventListener("click", () => {
     build_committee_description()
 });
+*/
 
 var sidebarArea = document.getElementById("sidebar");
 sidebarArea.addEventListener("click", () => {
