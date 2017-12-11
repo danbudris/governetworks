@@ -209,56 +209,6 @@ SenatorsButton.addEventListener("click", function(){
         }
 });
 
-//html maniuplation elements
-
-//define input_arry and i so that they can be used in inputs to the below function
-input_array = [];
-i = 0;
-
-//this is a function which can take an array, iterate over it, and for each add an element to the DOM; takes an array as input
-function add_element(element, element_type, output, input_array){
-    var select = document.getElementById(element);
-    for(var i = 0; i < input_array.length; i++){
-        var opt = ""
-        var process = output.forEach(function(entry){opt = opt+" "+input_array[i][entry]});
-        var el = document.createElement(element_type);
-        el.text = opt;
-        el.value = opt;
-        select.add(el);
-        }
-};    
-
-function json_to_element(element, element_type, output, input_array){
-    var select = document.getElementById(element);
-    for(var i = 0; i < input_array.length; i++){
-        console.log('test');
-    }
-};
-
-//utility function which can dedup and array based on an object key value
-function trim(arr, key) {
-    var values = {};
-    return arr.filter(function(item){
-        var val = item[key];
-        var exists = values[val];
-        values[val] = true;
-        return !exists;
-    });
-}
-
-//api call functions to the backend server
-function status(response){
-    if (response.status >= 200 && response.status < 300) {
-        return Promise.resolve(response)
-    } else {
-        return Promise.reject(new Error(response.statusText))
-    }
-};
-
-function json(response){
-    return response.json();
-};
-
 //Set up the committee button and the callback which builds the committee nodes and edges
 var CommitteeButton = document.getElementById("committeeButton");
 CommitteeButton.addEventListener("click", () => {
@@ -322,16 +272,83 @@ CommitteeButton.addEventListener("click", () => {
             }
         });
 
+//UTILITY FUNCTIONS
+//define input_arry and i so that they can be used in inputs to the below function
+input_array = [];
+i = 0;
+
+//this is a function which can take an array, iterate over it, and for each add an element to the DOM; takes an array as input
+function add_element(element, element_type, output, input_array){
+    var select = document.getElementById(element);
+    for(var i = 0; i < input_array.length; i++){
+        var opt = ""
+        var process = output.forEach(function(entry){opt = opt+" "+input_array[i][entry]});
+        var el = document.createElement(element_type);
+        el.text = opt;
+        el.value = opt;
+        select.add(el);
+        }
+};    
+
+function json_to_element(element, element_type, output, input_array){
+    var select = document.getElementById(element);
+    for(var i = 0; i < input_array.length; i++){
+        console.log('test');
+    }
+};
+
+//utility function which can dedup and array based on an object key value
+function trim(arr, key) {
+    var values = {};
+    return arr.filter(function(item){
+        var val = item[key];
+        var exists = values[val];
+        values[val] = true;
+        return !exists;
+    });
+}
+
+//api call functions to the backend server
+//return the status of the resolved promise; if it's a 200 or less than 300 return OK and resolve it
+function status(response){
+    if (response.status >= 200 && response.status < 300) {
+        return Promise.resolve(response)
+    } else {
+        return Promise.reject(new Error(response.statusText))
+    }
+};
+
+//get the json object from the resolved promise
+function json(response){
+    return response.json();
+};
+
+//function which uses promises to fetch data and process it with callbacks
+function build_data_lists(path, onrecieve_callback){
+    fetch(path)
+        .then(status)
+        .then(json)
+        .then((data) =>{
+            onrecieve_callback(data)
+        }).catch((error) => {
+            console.log('Request to ' + path + ' failed', error)
+        })
+};
+
+//expand to replace other promise returns
+var backend_url = 'http://127.0.0.1:8888'
+build_data_lists(backend_url+'/test', (data)=>{console.log(data)})
+
 // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
 //Promise to get the status and json body from the backend server senators API; 
 fetch('http://127.0.0.1:8888/test')  
     .then(status)  
     .then(json)  
-    .then(function(data) {  
+    .then((data) => {  
         senators = data;
         console.log('Request succeeded with JSON response', data); 
         add_element('personSelector', 'option', ["first_name","last_name"], senators);
-    }).catch(function(error) {  
+    }).catch((error) => {  
         console.log('Request failed', error);  
 });
 
@@ -339,10 +356,10 @@ fetch('http://127.0.0.1:8888/test')
 fetch('http://127.0.0.1:8888/committee')  
     .then(status)  
     .then(json)  
-    .then(function(data) {  
+    .then((data) => {  
         committees = data;
         console.log('Committee request succeeded with JSON response', data); 
-    }).catch(function(error) {  
+    }).catch((error) => {  
         console.log('Request failed', error);  
 });
 
@@ -350,23 +367,23 @@ fetch('http://127.0.0.1:8888/committee')
 fetch('http://127.0.0.1:8888/candidate')  
     .then(status)  
     .then(json)  
-    .then(function(data) {  
+    .then((data) => {  
         candidates = data;
         console.log('Candidate request succeeded with JSON response', data); 
-    }).catch(function(error) {  
+    }).catch((error) => {  
         console.log('Request failed', error);  
 });
 
 fetch('http://127.0.0.1:8888/contribution')  
     .then(status)  
     .then(json)  
-    .then(function(data) {  
+    .then((data) => {  
         contributions = data;
         console.log('Contribution request succeeded with JSON response', data); 
         uni_contributions = trim(contributions, 'CMTE_NM').sort(function (a, b) {
             return a.CMTE_NM.localeCompare( b.CMTE_NM );
         });
         add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
-    }).catch(function(error) {  
+    }).catch((error) => {  
         console.log('Request failed', error);  
 });
