@@ -249,7 +249,7 @@ CommitteeButton.addEventListener("click", () => {
                             console.log(id)
                             var index = committees.findIndex(p => p.CMTE_ID === id);
                             values.size = values.size+10;
-                            committeesJson = committees[700];
+                            committeesJson = committees[index];
                             build_committee_description(committeesJson);
                             committeeId = id;   
                             }
