@@ -341,10 +341,30 @@ function build_data_lists(path, onrecieve_callback){
 
 //expand to replace other promise returns
 var backend_url = 'http://127.0.0.1:8888'
-build_data_lists(backend_url+'/test', (data)=>{
+
+build_data_lists(backend_url+'/test', (data) => {
     senators = data;
     console.log('Request succeeded with JSON response', data); 
     add_element('personSelector', 'option', ["first_name","last_name"], senators);
+});
+
+build_data_lists(backend_url+'committee', (data) => {
+    committees = data;
+    console.log('Committee request succeeded with JSON response', data); 
+});
+
+build_data_lists(backend_url+'candidate', (data) => {
+    candidates = data;
+    console.log('Candidate request succeeded with JSON response', data); 
+});
+
+build_data_lists(backend_url+'contribution', (data) => {
+    contributions = data;
+    console.log('Contribution request succeeded with JSON response', data); 
+    uni_contributions = trim(contributions, 'CMTE_NM').sort(function (a, b) {
+        return a.CMTE_NM.localeCompare( b.CMTE_NM );
+    });
+    add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
 });
 
 // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
@@ -360,7 +380,6 @@ fetch('http://127.0.0.1:8888/test')
     }).catch((error) => {  
         console.log('Request failed', error);  
 });
-*/
 
 //Promsie to get the commitee data from the api
 fetch('http://127.0.0.1:8888/committee')  
@@ -397,3 +416,4 @@ fetch('http://127.0.0.1:8888/contribution')
     }).catch((error) => {  
         console.log('Request failed', error);  
 });
+*/
