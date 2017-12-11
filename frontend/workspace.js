@@ -225,6 +225,7 @@ CommitteeButton.addEventListener("click", () => {
         });
 
         console.log(individ_contribs);
+        build_committee_description(individ_contribs);
 
         if(individ_contribs.length === 0){
             alert("No contributors in this timeframe");
@@ -340,10 +341,15 @@ function build_data_lists(path, onrecieve_callback){
 
 //expand to replace other promise returns
 var backend_url = 'http://127.0.0.1:8888'
-build_data_lists(backend_url+'/test', (data)=>{console.log(data)})
+build_data_lists(backend_url+'/test', (data)=>{
+    senators = data;
+    console.log('Request succeeded with JSON response', data); 
+    add_element('personSelector', 'option', ["first_name","last_name"], senators);
+});
 
 // this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
 //Promise to get the status and json body from the backend server senators API; 
+/*
 fetch('http://127.0.0.1:8888/test')  
     .then(status)  
     .then(json)  
@@ -354,6 +360,7 @@ fetch('http://127.0.0.1:8888/test')
     }).catch((error) => {  
         console.log('Request failed', error);  
 });
+*/
 
 //Promsie to get the commitee data from the api
 fetch('http://127.0.0.1:8888/committee')  
