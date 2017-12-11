@@ -84,7 +84,7 @@ function build_committee_description(input_array){
     committee_box = document.getElementById("committee_text");
     committee_box.innerHTML = "";
     var i = 0;
-    let attrList = ["CMTE_NM","CMTE_ID"];
+    let attrList = ["CMTE_NM","CMTE_ID","Transaction Total"];
     console.log(attrList, input_array)
     for(var x in input_array){
         console.log(i);
@@ -224,9 +224,6 @@ CommitteeButton.addEventListener("click", () => {
             }
         });
 
-        console.log(individ_contribs);
-        build_committee_description(individ_contribs);
-
         if(individ_contribs.length === 0){
             alert("No contributors in this timeframe");
             return;
@@ -247,7 +244,7 @@ CommitteeButton.addEventListener("click", () => {
                         stabilization: false,
                         chosen:{node: function(values, id, selected, hovering){
                             console.log(id)
-                            var index = committees.findIndex(p => p.CMTE_ID === id);
+                            var index = individ_contribs.findIndex(p => p.CMTE_ID === id);
                             values.size = values.size+10;
                             committeesJson = committees[index];
                             build_committee_description(committeesJson);
@@ -328,18 +325,18 @@ function json(response){
 };
 
 //function which uses promises to fetch data and process it with callbacks
+//eliminates redundancy 
 function build_data_lists(path, onrecieve_callback){
     fetch(path)
         .then(status)
         .then(json)
-        .then((data) =>{
+        .then((data) => {
             onrecieve_callback(data)
         }).catch((error) => {
             console.log('Request to ' + path + ' failed', error)
         })
 };
 
-//expand to replace other promise returns
 var backend_url = 'http://127.0.0.1:8888'
 
 build_data_lists(backend_url+'/test', (data) => {
@@ -366,54 +363,3 @@ build_data_lists(backend_url+'/contribution', (data) => {
     });
     add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
 });
-
-// this is very redundant, and there should be a conslidated function for making API calls and assinging the data to a variable
-//Promise to get the status and json body from the backend server senators API; 
-/*
-fetch('http://127.0.0.1:8888/test')  
-    .then(status)  
-    .then(json)  
-    .then((data) => {  
-        senators = data;
-        console.log('Request succeeded with JSON response', data); 
-        add_element('personSelector', 'option', ["first_name","last_name"], senators);
-    }).catch((error) => {  
-        console.log('Request failed', error);  
-});
-
-//Promsie to get the commitee data from the api
-fetch('http://127.0.0.1:8888/committee')  
-    .then(status)  
-    .then(json)  
-    .then((data) => {  
-        committees = data;
-        console.log('Committee request succeeded with JSON response', data); 
-    }).catch((error) => {  
-        console.log('Request failed', error);  
-});
-
-
-fetch('http://127.0.0.1:8888/candidate')  
-    .then(status)  
-    .then(json)  
-    .then((data) => {  
-        candidates = data;
-        console.log('Candidate request succeeded with JSON response', data); 
-    }).catch((error) => {  
-        console.log('Request failed', error);  
-});
-
-fetch('http://127.0.0.1:8888/contribution')  
-    .then(status)  
-    .then(json)  
-    .then((data) => {  
-        contributions = data;
-        console.log('Contribution request succeeded with JSON response', data); 
-        uni_contributions = trim(contributions, 'CMTE_NM').sort(function (a, b) {
-            return a.CMTE_NM.localeCompare( b.CMTE_NM );
-        });
-        add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
-    }).catch((error) => {  
-        console.log('Request failed', error);  
-});
-*/
