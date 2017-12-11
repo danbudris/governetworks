@@ -63,6 +63,10 @@ body{
 
 }
 
+.sidebar_list{
+    width: 100%;
+}
+
 .sidebar_box{
     flex-grow: 0;
     overflow: hidden;

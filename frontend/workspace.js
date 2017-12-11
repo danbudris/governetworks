@@ -80,14 +80,14 @@ function build_bio(input_array){
     }
 };
 
+// This may, at the moment, only return the FIRST contribution from a given contributor; 
+// I need to figure out how to roll-up that contribution and ensure that the numbers are right
 function build_committee_description(input_array){
     committee_box = document.getElementById("committee_text");
     committee_box.innerHTML = "";
     var i = 0;
     let attrList = ["CMTE_NM","CMTE_ID","Transaction Total"];
-    console.log(attrList, input_array)
     for(var x in input_array){
-        console.log(i);
         var attrName = x;
         if (attrList.includes(attrName)){
             var attrValue = input_array[x];
@@ -243,7 +243,6 @@ CommitteeButton.addEventListener("click", () => {
                         size: 10,
                         stabilization: false,
                         chosen:{node: function(values, id, selected, hovering){
-                            console.log(id)
                             var index = individ_contribs.findIndex(p => p.CMTE_ID === id);
                             values.size = values.size+10;
                             committeesJson = individ_contribs[index];
@@ -298,7 +297,7 @@ function json_to_element(element, element_type, output, input_array){
     }
 };
 
-//utility function which can dedup and array based on an object key value
+//utility function which can dedupe and array based on an object key value
 function trim(arr, key) {
     var values = {};
     return arr.filter(function(item){
