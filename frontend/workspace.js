@@ -247,7 +247,7 @@ CommitteeButton.addEventListener("click", () => {
                         stabilization: false,
                         chosen:{node: function(values, id, selected, hovering){
                             console.log(id)
-                            var index = committees.findIndex(p => p.id === id);
+                            var index = committees.findIndex(p => p.CMTE_ID === id);
                             values.size = values.size+10;
                             committeesJson = committees[700];
                             build_committee_description(committeesJson);
