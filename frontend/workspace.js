@@ -69,7 +69,6 @@ function build_bio(input_array){
     var i = 0;
     attrList = ["first_name","last_name","party","next_election","state","state_rank"];
     for(var x in input_array){
-        console.log(i);
         var attrName = x;
         if (attrList.includes(attrName)){
             var attrValue = input_array[x];
@@ -246,6 +245,7 @@ CommitteeButton.addEventListener("click", () => {
                         size: 10,
                         stabilization: false,
                         chosen:{node: function(values, id, selected, hovering){
+                            console.log(id)
                             var index = committees.findIndex(p => p.id === id);
                             values.size = values.size+10;
                             committeesJson = committees[index];
