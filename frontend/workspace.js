@@ -389,6 +389,8 @@ let search_senators = (senator_id) => {
     return senator_object;
 };
 
+//comittee selector now produces these objects which can be maniuplated to tell more
+//about the given committee and their contributions 
 $("#committeeSelector").change(function(){
     let name = this.value.trim();
     let contribs = search_committee(name);
