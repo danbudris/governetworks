@@ -382,16 +382,34 @@ let search_contributions = (senator_id) => {
     return individual_contributions
 };
 
+let search_senators = (senator_id) => {
+    let senator_object = senators.filter( senator => {
+       return senator.id == senator_id;
+    });
+    return senator_object;
+};
+
 $("#committeeSelector").change(function(){
     let name = this.value.trim();
     let contribs = search_committee(name);
     let contribs_count = contribs.length;
-    let contribs_sum = () => {
-        let sum = 0;
+  
+    let candidates = () => {
+        let cand_list = [];
         contribs.forEach((element) => {
-            sum += element["Transaction Total"]
+            cand_list.push(senators[element.id]);
+        });
+        let unique_candidates = [...new Set(cand_list)];     
+        return cand_list;
+    };
+
+    let contribs_sum = () => {
+        let contribution_sum = 0;
+        contribs.forEach((element) => {
+            let single_contrib = Number(element["Transaction Total"]);
+            contribution_sum += single_contrib;
         });
         return sum;
     };
-    console.log(name, contribs, contribs_count, contribs_sum());
+    console.log(name, contribs, contribs_count, contribs_sum(), candidates());
 });
