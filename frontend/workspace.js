@@ -82,6 +82,9 @@ function build_bio(input_array){
 
 // This may, at the moment, only return the FIRST contribution from a given contributor; 
 // I need to figure out how to roll-up that contribution and ensure that the numbers are right
+//Also, this does not behave as expected whenever the node is already displayed; it seems to 
+//display the contribution that the initial contributor displayed; perhaps this should display cumulatively? 
+//or display a list in the sidebar with the contributions, and you can pick one to view it?
 function build_committee_description(input_array){
     committee_box = document.getElementById("committee_text");
     committee_box.innerHTML = "";
@@ -361,4 +364,26 @@ build_data_lists(backend_url+'/contribution', (data) => {
         return a.CMTE_NM.localeCompare( b.CMTE_NM );
     });
     add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
+});
+
+
+
+//get all contributions given by a committee based on their committee id
+let search_committee = (committee_id) => {
+    let committee_contributions = contributions.filter( contribution => {
+        return contribution.CMTE_ID == committee_id;
+    })
+    return committee_contributions;
+};
+
+//get all of the contributions to a given senator based on their senate ID
+let search_contributions = (senator_id) => {
+    let individual_contributions = contributions.filter( contribution => {
+        return contribution.id == senator_id;
+    })
+    return individual_contributions
+};
+
+$("#committeeSelector").change( () => {
+    console.log(this.value)
 });
