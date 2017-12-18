@@ -367,9 +367,9 @@ build_data_lists(backend_url+'/contribution', (data) => {
 });
 
 //get all contributions given by a committee based on their committee id
-let search_committee = (committee_id) => {
+let search_committee = (committee_name) => {
     let committee_contributions = contributions.filter( contribution => {
-        return contribution.CMTE_ID == committee_id;
+        return contribution.CMTE_NM == committee_name;
     })
     return committee_contributions;
 };
@@ -383,5 +383,6 @@ let search_contributions = (senator_id) => {
 };
 
 $("#committeeSelector").change(function(){
-    console.log(this.value)
+    let name = this.value;
+    console.log(search_committee(name));
 });
