@@ -386,5 +386,5 @@ $("#committeeSelector").change(function(){
     let name = this.value;
     console.log(name)
     let contribs = search_committee(name);
-    return contribs;
+    console.log(contribs);
 });
