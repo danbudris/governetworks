@@ -386,12 +386,12 @@ $("#committeeSelector").change(function(){
     let name = this.value.trim();
     let contribs = search_committee(name);
     let contribs_count = contribs.length;
-    let contribs_sum = (contribs) => {
+    let contribs_sum = () => {
         let sum = 0;
         contribs.forEach((element) => {
             sum += element["Transaction Total"]
         });
         return sum;
     };
-    console.log(name, contribs, contribs_count, contribs_sum);
+    console.log(name, contribs, contribs_count, contribs_sum());
 });
