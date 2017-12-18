@@ -67,7 +67,7 @@ function build_bio(input_array){
     bio_box = document.getElementById("bio_text");
     bio_box.innerHTML = "";
     var i = 0;
-    attrList = ["first_name","last_name","party","next_election","state","state_rank"];
+    attrList = ["first_name","last_name","party","total_votes","senate_class","state_rank"];
     for(var x in input_array){
         var attrName = x;
         if (attrList.includes(attrName)){
@@ -189,7 +189,7 @@ SenatorsButton.addEventListener("click", function(){
 
             nodes.add({
                 id: senators[i]['id'],
-                label: senators[i]['first_name'] + "\n" + senators[i]['last_name'] + "\n" + senators[i]['state'],
+                label: senators[i]['first_name'] + "\n" + senators[i]['last_name'] + "\n" + senators[i]['senate_class'],
                 color: {border: borderColor, background: backgroundColor},
                 font: "10px arial #e3dac9",
                 shadow:{color:"#161616"},
@@ -365,8 +365,6 @@ build_data_lists(backend_url+'/contribution', (data) => {
     });
     add_element('committeeSelector','option',['CMTE_NM'],uni_contributions)
 });
-
-
 
 //get all contributions given by a committee based on their committee id
 let search_committee = (committee_id) => {
