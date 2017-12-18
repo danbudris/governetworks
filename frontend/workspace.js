@@ -367,7 +367,7 @@ build_data_lists(backend_url+'/contribution', (data) => {
 });
 
 //get all contributions given by a committee based on their committee id
-let search_committee = (committee_name) => {
+let search_committee = function(committee_name){
     let committee_contributions = contributions.filter( contribution => {
         return contribution.CMTE_NM == committee_name;
     })
