@@ -397,10 +397,11 @@ $("#committeeSelector").change(function(){
     let candidates = () => {
         let cand_list = [];
         contribs.forEach((element) => {
-            cand_list.push(senators[element.id]);
+            let senator = search_senators(element.id)
+            cand_list.push(senator);
         });
         let unique_candidates = [...new Set(cand_list)];     
-        return cand_list;
+        return unique_candidates;
     };
 
     let contribs_sum = () => {
