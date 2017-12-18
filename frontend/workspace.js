@@ -367,7 +367,7 @@ build_data_lists(backend_url+'/contribution', (data) => {
 });
 
 //get all contributions given by a committee based on their committee id
-let search_committee = function(committee_name){
+let search_committee = (committee_name) => {
     let committee_contributions = contributions.filter( contribution => {
         return contribution.CMTE_NM == committee_name;
     })
@@ -385,5 +385,13 @@ let search_contributions = (senator_id) => {
 $("#committeeSelector").change(function(){
     let name = this.value.trim();
     let contribs = search_committee(name);
-    console.log(contribs);
+    let contribs_count = contribs.length;
+    let contribs_sum = (contribs) => {
+        let sum = 0;
+        contribs.forEach((element) => {
+            sum += element["Transaction Total"]
+        });
+        return sum;
+    };
+    console.log(name, contribs, contribs_count, contribs_sum);
 });
