@@ -409,7 +409,7 @@ $("#committeeSelector").change(function(){
             let single_contrib = Number(element["Transaction Total"]);
             contribution_sum += single_contrib;
         });
-        return sum;
+        return contribution_sum;
     };
     console.log(name, contribs, contribs_count, contribs_sum(), candidates());
 });
