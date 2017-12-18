@@ -382,6 +382,6 @@ let search_contributions = (senator_id) => {
     return individual_contributions
 };
 
-$("#committeeSelector").change( () => {
+$("#committeeSelector").change(function(){
     console.log(this.value)
 });
