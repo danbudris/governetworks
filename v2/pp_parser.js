@@ -1,5 +1,5 @@
 //ProPublica Parser
-// This is a module for parsing the input of the ProPublica Congress API, and inserting the contents into the Postgres Database
+// This is a module for parsing the input of the ProPublica Congress API, and inserting the contents into the Mongo Database
 const request = require('request');
 var rp = require('request-promise');
 const MongoClient = require('mongodb').MongoClient;
