@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
+const dedupe = require('dedupe');
 const MongoClient = require('mongodb').MongoClient;
 
 // the port to listen on 
@@ -12,6 +13,8 @@ const url = 'mongodb://localhost:27017';
 // database name
 const dbname = 'governet';
 var _db;
+
+
 
 // Intentionally circumvent web security to make my life developing this easier in the short term
 app.use(function(req, res, next) {
@@ -101,59 +104,208 @@ app.get('/api/graph/committee/:committeeID', (req, res) => {
     })
 })
 
-app.get('/api/graph/contribution/:candID', (req, res) => {
-    query = {};
-    if (req.params.candID){query["CAND_ID"] = req.params.candID};
-    _db.collection("pas2").find(query).toArray((err,result) => {
-        if (err) throw err;
+app.post('/api/graph/contribution/:candID', (req, res) => {
+    //query = {TRANSACTION_AMT: {$gt: 500}};
+    // get the candidate id from the url, if it's there
+    //if (req.params.candID){query["CAND_ID"] = req.params.candID};
 
-        // Empty values for the graph options and data, to be populated
-        var graph = {};
-        var nodes = [];
-        var links = [];
-        var categories = []
+    // Empty values for the graph options and data, to be populated below
+    var graph = {};
+    var nodes = [];
+    var links = [];
+    var categories = []
 
-        var candidates = [];
-        var committees = [];
-        var secondaryCandidates = [];
-        var primaryCandidateCategory = {name:"Primary Candidate","keyword":{},"base":"Primary Candidate"}
+    // Empty values for processing data
+    var candidates = [];
+    var committees = [];
+    var secondaryCandidates = [];
 
-        var candidateCategory = {name:"Candidate","keyword":{},"base":"Candidate"}
-        var committeeCategory = {name: "Committee","Keyword":{},base:"Committee"}
-        categories.push(primaryCandidateCategory, candidateCategory, committeeCategory);
-        graph['categories'] = categories;
+    var primaryCandidateCategory = {name:"Primary Candidate","keyword":{},"base":"Primary Candidate", "itemStyle":{"color":"#9D5C63"}, "label":{"color":"black"}}
+    var candidateCategory = {name:"Candidate","keyword":{},"base":"Candidate", "itemStyle":{"color":"#FEF5EF"}, "label":{"color":"black"}}
+    var committeeCategory = {name: "Committee","Keyword":{},base:"Committee", "itemStyle":{"color":"#3E92CC"}, "label":{"color":"black"}}
+    categories.push(primaryCandidateCategory, candidateCategory, committeeCategory);
+    graph['categories'] = categories;
 
-        //add the requested candidate to the nodes list
-        nodes.push({name: req.params.candID, id: req.params.candID, value: 1, category: 0});
-        // Get the graph edges between a given candidate and the committees who have contributed to that candidate
-        // those links that have been processed; for filtering unique objects basedo n contribution id
-        var processed = {};
+    //add the requested candidate to the nodes list
+    nodes.push({name: req.params.candID, id: req.params.candID, value: 1, category: 0});
+    // Get the graph edges between a given candidate and the committees who have contributed to that candidate
+
+    // those links that have been processed; for filtering unique objects based on contribution id
+    var processed = {};
+    var processed_candidates = {};
+
+    // look up contributions to that candidate in the database
+
+    function getCandidateLinks(){
+        return _db.collection("pas2").aggregate([
+            {
+                $match:
+                    {
+                        $and:
+                            [
+                                {
+                                    "CAND_ID": 
+                                    {
+                                         $eq: req.params.candID 
+                                    },
+                                    "TRANSACTION_AMT" : 
+                                    {
+                                        $gt: 500
+                                    }
+                                }
+                            ]
+                    }
+            },
+            {
+                $lookup:
+                    {
+                        from:"cm", 
+                        localField:"CMTE_ID", 
+                        foreignField:"CMTE_ID", 
+                        as:"CMTE_IDS"
+                    }
+            },
+            {
+                $lookup:
+                {
+                    from: "cn",
+                    localField: "CAND_ID",
+                    foreignField: "CAND_ID",
+                    as: "CAND_INFO"
+                }
+            },
+            {
+                $unwind:
+                    "$CMTE_IDS"
+            },
+            {
+                $unwind:
+                    "$CAND_INFO"
+            },
+            {
+                $project:
+                    {
+                        CMTE_ID: 1, 
+                        CAND_ID: 1, 
+                        TRANSACTION_AMT: 1, 
+                        CMTE_NM: "$CMTE_IDS.CMTE_NM",
+                        CAND_NM: "$CAND_INFO.CAND_NAME"
+                    }
+            }
+        ]).toArray();    
+    }
+
+    function getCommitteeLinks(committee_list, cand_id){
+        return _db.collection("pas2").aggregate([
+            {$match:
+                {
+                    $and:
+                        [
+                            {
+                                "CMTE_ID" : 
+                                {
+                                    $in: committee_list
+                                },
+                                "CAND_ID" :
+                                {
+                                    $ne: req.params.candID
+                                },
+                                "TRANSACTION_AMT" : 
+                                {
+                                    $gt: 5000
+                                }
+                            }
+                        ]
+                }
+            },
+            {
+                $lookup:
+                    {
+                        from:"cm", 
+                        localField:"CMTE_ID", 
+                        foreignField:"CMTE_ID", 
+                        as:"CMTE_IDS"
+                    }
+            },
+            {
+                $lookup:
+                {
+                    from: "cn",
+                    localField: "CAND_ID",
+                    foreignField: "CAND_ID",
+                    as: "CAND_INFO"
+                }
+            },
+            {
+                $unwind:
+                    "$CMTE_IDS"
+            },
+            {
+                $unwind:
+                    "$CAND_INFO"
+            },
+            {
+                $project:
+                    {
+                        CMTE_ID: 1, 
+                        CAND_ID: 1, 
+                        TRANSACTION_AMT: 1, 
+                        CMTE_NM: "$CMTE_IDS.CMTE_NM",
+                        CAND_NM: "$CAND_INFO.CAND_NAME"
+                    }
+            }
+        ]).toArray();    
+    }
+
+    function processCandidate(committee_records){
         links = (
             links.concat(
-                result
+                committee_records
                 // map the contributions to a given candidate to just the cand id and committee ID
                 .map((contribution, index, array) => {
-                    //return {contribution_id: contribution.CMTE_ID + contribution.CAND_ID, cmte_id: contribution.CMTE_ID, cand_id: contribution.CAND_ID}
-                    return {source: contribution.CMTE_ID, target: contribution.CAND_ID}
-                })
-                // filter out the duplicated transactions, using a 'processed' flag
-                .filter((contribution) => {
-                    if (processed[contribution.source]) {
-                        return false;
+                    if (!processed[contribution.CMTE_ID]){
+                        console.log("CMTE NM: " + contribution.CMTE_NM)
+                        console.log(contribution)
+                        processed[contribution.CMTE_ID] = true;
+                        nodes.push({name:contribution.CMTE_NM, id: contribution.CMTE_ID, value: 1, category: 2});
+                        committees.push(contribution.CMTE_ID);
+                        //return {contribution_id: contribution.CMTE_ID + contribution.CAND_ID, cmte_id: contribution.CMTE_ID, cand_id: contribution.CAND_ID}
+                        return {source: contribution.CMTE_ID, target: contribution.CAND_ID};
                     }
-                    processed[contribution.source] = true;
-                    committees.push(contribution.source);
-                    nodes.push({name:contribution.source, id: contribution.source, value: 1, category: 2})
-                    return true;
+                    return false;
                 })
             )
         )
+    }
 
+    function processCommittees(committee_records){
+        links = (
+            links.concat(
+                committee_records
+                .map((contribution, index, array) => {
+                    if (!processed_candidates[contribution.CAND_ID]){
+                        console.log("CAND_ID: " + contribution.CAND_ID)
+                        console.log(contribution)
+                        nodes.push({name:contribution.CAND_NM, id: contribution.CAND_ID, value: 1, category: 1})
+                        processed_candidates[contribution.CAND_ID] = true
+                    }
+                    return {source: contribution.CMTE_ID, target: contribution.CAND_ID}
+                })
+            )
+        )
+    }
+
+    getCandidateLinks()
+    .then(result => processCandidate(result))
+    .then(() => getCommitteeLinks(committees, req.params.candID))
+    .then(result => processCommittees(result))
+    .then(()=>{
         //add the link objects generated above to the graph object as a dict of link objcets
-        graph["links"] = links;
+        graph["links"] = dedupe(links);
         // add all the node objects to the graph
-        graph["nodes"] = nodes;
-
+        graph["nodes"] = dedupe(nodes);
+        //console.log(graph)
+        //console.log(processed_candidates)
         res.json(graph);
     })
 })
@@ -164,10 +316,31 @@ MongoClient.connect(url)
         _db = client.db(dbname);
         console.log("Connection Established to " + url);
         // Only star the express app if the DB connection is established
-        app.listen(listenPort, () => {console.log("listening on port: " + listenPort)});
+        app.listen(listenPort, () => {console.log("Governet API listening on port: " + listenPort)});
     })
     .catch((err) => {
         console.log(err);
         throw(err);
     });
 
+
+/*
+
+Name
+Address
+Party
+Races filed for
+
+count of total contributions recieved by the given candidate
+count the total number of committees that have given to the candidate
+average contribution
+largest contribution
+smallest contribution
+
+contributions over time, in a time-series
+
+list of committees that have contributed to this individual
+
+most similar candidates based on contributions from committees (jacard similarity!!)
+
+*/
