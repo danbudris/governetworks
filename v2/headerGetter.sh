@@ -1,9 +1,9 @@
 #!/bin/bash
-
+# Bash sript for download, cleaning and bulk-inserting the data into the mongo database
 ## Specify which header files and data sets to download from the FEC FTP servers
 headerfiles=("cm_header_file.csv" "cn_header_file.csv" "ccl_header_file.csv" "oppexp_header_file.csv" "oth_header_file.csv" "pas2_header_file.csv" "indiv_header_file.csv")
 years=("2016") # "2014" "2016" "2018")
-filetypes=("pas2") # "oppexp" "cm" "cn" "ccl"  "oth" "indiv","pas2")
+filetypes=("cm", "cn", "ccl", "pas2")
 
 ## Download each header file and replace the comma delimiters with tabs
 for i in "${headerfiles[@]}"
@@ -49,4 +49,3 @@ done
 
 # clean up
 rm ./*.zip
-
