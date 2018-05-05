@@ -14,8 +14,6 @@ const url = 'mongodb://localhost:27017';
 const dbname = 'governet';
 var _db;
 
-
-
 // Intentionally circumvent web security to make my life developing this easier in the short term
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
