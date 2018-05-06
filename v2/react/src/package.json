@@ -1,0 +1,25 @@
+{
+  "name": "governet",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "d3": "^4.13.0",
+    "echarts": "^4.0.4",
+    "echarts-for-react": "^2.0.8",
+    "react": "^16.2.0",
+    "react-bootstrap": "^0.32.1",
+    "react-dom": "^16.2.0",
+    "react-redux-loading-bar": "^3.1.1",
+    "react-scripts": "1.1.1",
+    "react-vis": "^1.9.1",
+    "react-vis-force": "^0.3.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "proxy": "http://127.0.0.1:8080"
+}
