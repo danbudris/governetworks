@@ -14,8 +14,6 @@ services:
       - 27017:27017
     networks:
       - governetwork
-    environment:
-      - MONGO_INITDB_DATABASE=governet
   frontend:
     build: ./frontend/.
     ports:

@@ -14,7 +14,8 @@ RUN mkdir ./dump/governet
 WORKDIR /opt/dump/governet
 RUN aws s3 cp --no-sign-request --recursive s3://governet-dumps ./
 RUN ls
-RUN mongod --fork --syslog && mongorestore /opt/dump/governet \
+RUN mongod --fork --syslog \
+    && mongorestore /opt/dump/governet \
     && mongo governet --eval "db.cm.createIndex({CMTE_ID: 1, CAND_ID: 1})" \
     && mongo governet --eval "db.cn.createIndex({CAND_ID: 1})" \
     && mongo governet --eval "db.pas2.createIndex({CAND_ID: 1, CMTE_ID: 1})"
