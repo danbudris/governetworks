@@ -7,8 +7,12 @@ RUN apt-get install -y \
                        wget \
                        git
 
-RUN cd /srv && git clone https://github.com/danbudris/governetworks.git
+WORKDIR /srv
+RUN git clone https://github.com/danbudris/governetworks.git
 
-RUN cd /srv/governetworks/backend && npm install pg request init express vis && npm install -g pm2
+WORKDIR /srv/governetworks/v2
+RUN npm install 
 
-CMD pm2 start /srv/governetworks/backend/serve.js && tail -f /dev/null
+EXPOSE 8080
+
+CMD node serve.js
