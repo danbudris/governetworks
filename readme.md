@@ -8,7 +8,7 @@ All of the data used in Governet is obtained from the Federal Election Comission
 A front end web application provides a user interface to an API which querys an underlying database.  The front end is built in React.js.  The back end server is written in Node.js, using the Express framework for the API.  The database is MongoDB.  The application is composed with Docker and Docker Compose.  Some data loading is done in bash scripts.
 
 ## Running Governet Locally with Docker Compose
-To run the application, you'll need [Docker Community Edition.]: https://docs.docker.com/install/
+To run the application, you'll need [Docker Community Edition.](https://docs.docker.com/install/)
 
 To run the application, you'll need to download the source, build the containers with docker compose, and then restore the database.
 
