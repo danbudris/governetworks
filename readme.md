@@ -2,7 +2,7 @@
 Governetworks is a tool to load, process and visualize federal campaign finance data.  It provides structured visualizations out-of-the-box, which are built on an uderlying API and toolset.  The API can be directly accessed and I encourage you to build tools and interfaces on top of it.
 
 ## The Data
-All of the data used in Governet is obtained from the Federal Election Comission.  Specifically, the data is downloaded in bulk format from an FEC FTP server (https://cg-519a459a-0ea3-42c2-b7bc-fa1143481f74.s3-us-gov-west-1.amazonaws.com/bulk-downloads/index.html).  Currently Governet is using candidate (cn), committe (cm), and individual contribution (itpas) detailed data files.  
+All of the data used in Governet is obtained from the Federal Election Comission.  Specifically, the data is downloaded in bulk format from the official [Federal Election Committee FTP server](https://cg-519a459a-0ea3-42c2-b7bc-fa1143481f74.s3-us-gov-west-1.amazonaws.com/bulk-downloads/index.html).  Currently Governet is using candidate (cn), committe (cm), and individual contribution (itpas) detailed data files.  
 
 ## The Application
 A front end web application provides a user interface to an API which querys an underlying database.  The front end is built in React.js.  The back end server is written in Node.js, using the Express framework for the API.  The database is MongoDB.  The application is composed with Docker and Docker Compose.  Some data loading is done in bash scripts.
