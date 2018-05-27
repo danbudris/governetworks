@@ -9,7 +9,7 @@ Governet is a work in progress in the very earliest stages.  The currently narro
 Currently, Governet comes pre-loaded with Committee, Candidate and Individual contribution data from 2010 - 2018, and a network graph visualizaing the committees who have contributed to a given candidate.  
 
 When you select a candidate, Governet will display all of the committees who have contributed to that candidate.  It will also show you the candidates that the displayed committees have contributed a major gift toward ($5000 or more).  
-![GovernetVisualization](./images/workspace.png "Logo Title Text 1")
+![GovernetVisualization](./images/workspace.png "The application in use")
 
 ## The Data
 All of the data used in Governet is obtained from the Federal Election Comission.  Specifically, the data is downloaded in bulk format from the official [Federal Election Committee FTP server](https://cg-519a459a-0ea3-42c2-b7bc-fa1143481f74.s3-us-gov-west-1.amazonaws.com/bulk-downloads/index.html).  Currently Governet is using candidate (cn), committe (cm), and individual contribution (itpas) detailed data files.  
