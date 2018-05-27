@@ -1,4 +1,4 @@
-# Running Governet V2
+# Running Governet Locally with Docker Compose
 To run the application, you'll need to download the source, build the containers with docker compose, and then restore the database.
 
 - Clone the repository and cd to v2
