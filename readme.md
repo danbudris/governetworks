@@ -1,11 +1,24 @@
-# Running Governet Locally with Docker Compose
+# Governetworks
+Governetworks is a tool to load, process and visualize federal campaign finance data.  It provides structured visualizations out-of-the-box, which are built on an uderlying API and toolset.  The API can be directly accessed and I encourage you to build tools and interfaces on top of it.
+
+## The Data
+All of the data used in Governet is obtained from the Federal Election Comission.  Specifically, the data is downloaded in bulk format from an FEC FTP server (https://cg-519a459a-0ea3-42c2-b7bc-fa1143481f74.s3-us-gov-west-1.amazonaws.com/bulk-downloads/index.html).  Currently Governet is using candidate (cn), committe (cm), and individual contribution (itpas) detailed data files.  
+
+## The Application
+A front end web application provides a user interface to an API which querys an underlying database.  The front end is built in React.js.  The back end server is written in Node.js, using the Express framework for the API.  The database is MongoDB.  The application is composed with Docker and Docker Compose.  Some data loading is done in bash scripts.
+
+## Running Governet Locally with Docker Compose
+To run the application, you'll need [Docker Community Edition.]:https://docs.docker.com/install/
+
 To run the application, you'll need to download the source, build the containers with docker compose, and then restore the database.
 
-- Clone the repository and cd to v2
-- Execute the command `docker-compose up --build`.  This will build and start the frontend, backend and database containers.
+- Clone the repository
+- Build and start the application with docker: `docker-compose up --build`.  This will build and start the frontend, backend and database containers. 
 - Restore the database and build the indexes:  
     `docker exec -it v2_mongodb_1 bash -c 'mongorestore /opt/dump/governet && mongo governet --eval "db.cm.createIndex({CMTE_ID: 1, CAND_ID: 1})" && mongo governet --eval "db.cn.createIndex({CAND_ID: 1})" && mongo governet --eval "db.pas2.createIndex({CAND_ID: 1, CMTE_ID: 1})"'`
 - Connect to the app on port 5000
+
+## Navigating the App
 
 The app consists of 3 containers, one which serves the React frontend, one which runs the node/express API and data parser, and the mongo database.  The database container is instantiated with a data dump on it, but it must be restored with the above command for the applicaiton to function.  See `docker-compose.yml` and each individual `Dockerfile` for more information.
 
