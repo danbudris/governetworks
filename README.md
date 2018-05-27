@@ -3,7 +3,7 @@ Governet is a tool to load, process and visualize campaign finance data from the
 
 Governet provides structured visualizations built on an uderlying API and toolset which expose the data. Look for API documentation in the next release.
 
-Governet is a work in progress in the very earliest stages.  The currently narrow scope of the API and visualizations will be exapnding in each subsequent release.  The API will be purposefully structured in such a way to to provide generic data which can be consumed by a variety of custom and, eventually, off-the-shelf applications.  API documentation is on the roadmap for the next release.
+Governet is a work in progress in the very earliest stages.  The currently narrow scope of the API and visualizations will be exapnding in each subsequent release.  The API will be purposefully structured in such a way to provide generic data which can be consumed by a variety of custom and, eventually, off-the-shelf applications.  API documentation is on the roadmap for the next release.
 
 
 Currently, Governet comes pre-loaded with Committee, Candidate and Individual contribution data from 2010 - 2018, and a network graph visualizaing the committees who have contributed to a given candidate.  
